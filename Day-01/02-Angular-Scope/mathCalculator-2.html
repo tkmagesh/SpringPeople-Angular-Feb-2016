@@ -35,22 +35,46 @@
         this.result = this.number1 / this.number2;
     }
 
-    angular.module("ng").run(function($rootScope){
-        $rootScope.calculator = new MathCalculator();
+    var calculatorApp = angular.module("calculatorApp", []);
+
+    calculatorApp.run(function($rootScope){
+        $rootScope.appName = 'Calculator App';
     })
+
+    calculatorApp.controller("calculatorController", function($scope ){
+        console.log(arguments);
+        $scope.calculator = new MathCalculator();
+        $scope.operation = '';
+        $scope.calculate = function(){
+            switch ($scope.operation){
+                case 'add' :
+                    $scope.calculator.add();
+                    break;
+                case 'subtract' :
+                    $scope.calculator.subtract();
+                    break;
+                case 'divide' :
+                    $scope.calculator.divide();
+                    break;
+                case 'multiply' :
+                    $scope.calculator.multiply();
+                    break;
+            }
+        }
+    });
     </script>
 </head>
-<body ng-app>
+<body ng-app="calculatorApp" ng-controller="calculatorController">
     <h1>Math Calculator</h1>
     <input type="number" ng-model="calculator.number1">
-    <select>
+    <select ng-model="operation">
         <option value="add">add</option>
         <option value="subtract">subtract</option>
         <option value="multiply">multiply</option>
         <option value="divide">divide</option>
     </select>
     <input type="number" ng-model="calculator.number2">
-    <input type="button" value="Calculate">
-    <div class="result" ng-bind="calculator.result">[Result]</div>
+    <input type="button" value="Calculate" ng-click="calculate()">
+    <div class="result" ng-bind="calculator.result | currency">[Result]</div>
 </body>
 </html>
