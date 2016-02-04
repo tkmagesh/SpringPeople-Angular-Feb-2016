@@ -100,21 +100,39 @@
 
 
 
-        $("#btnCalculate").click(function(){
+        /*$("#btnCalculate").click(function(){
             scope.$apply(function(){
                 calculator.calculate();
             });
-        });
+        });*/
+
+        $("*[app-click]").each(function(index, element){
+            var $element = $(element),
+                expr = $element.attr("app-click");
+            $element.click(function(){
+                scope.$apply(function(){
+                    scope.$eval(expr);
+                });
+            });
+        })
 
 
         //React to model changes
-        scope.$watch('calculator.salary', function(){
+       /* scope.$watch('calculator.salary', function(){
             $("#divResult").html(calculator.salary);
         });
 
         scope.$watch('calculator.tax', function(){
             $("#spanTax").html(calculator.tax);
-        });
+        });*/
+
+       $("*[app-bind]").each(function(index, element){
+           var $element = $(element),
+               model = $element.attr("app-bind");
+            scope.$watch(model, function(newValue){
+                $element.html(newValue);
+            });
+       })
     });
     </script>
 </head>
@@ -138,13 +156,13 @@
     <div class="field">
         <label for="">Tax [%]:</label>
         <input type="range" name="" id="rangeTax" min="0" max="30" value="0" app-model="calculator.tax">
-        <span id="spanTax">[Tax]</span>
+        <span id="spanTax" app-bind="calculator.tax">[Tax]</span>
     </div>
     <div class="field">
-        <input type="button" value="Calculate" id="btnCalculate">
+        <input type="button" value="Calculate" id="btnCalculate" app-click="calculator.calculate()">
     </div>
     <div class="field">
-        <div id="divResult">[Salary]</div>
+        <div id="divResult" app-bind="calculator.salary">[Salary]</div>
     </div>
 </div>
 </body>
