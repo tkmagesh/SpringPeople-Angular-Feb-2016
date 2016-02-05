@@ -30,6 +30,12 @@
         }
         span.bugName{
             cursor: pointer;
+            font-size: 16pt;
+            display: block;
+        }
+        span.datetime{
+            font-style: italic;
+            color : gray;
         }
     </style>
     <!--
@@ -62,8 +68,11 @@
     12. Categorize the bugs and display by category
     -->
     <script src="angular.js"></script>
+    <script src="moment.js"></script>
+    <script src="utils.js"></script>
     <script>
-        var bugTrackerApp = angular.module('bugTrackerApp', []);
+        
+        var bugTrackerApp = angular.module('bugTrackerApp', ["utils"]);
 
         /*bugTrackerApp.value('Bug', function(defaults){
             this.name = defaults.name || '';
@@ -72,7 +81,8 @@
                 this.isClosed = !this.isClosed;
             };
         });*/
-
+        bugTrackerApp.value('defaultTrimLength', 50);
+        
         bugTrackerApp.value("defaultBugName", "[Default Bug]");
 
         bugTrackerApp.factory("Bug", function(defaultBugName){
@@ -88,9 +98,9 @@
             return Bug;
         });
 
-        bugTrackerApp.factory("bugStorage", function(Bug){
+        bugTrackerApp.factory("bugStorage", function(Bug, $window){
             var maxBugId = 0;
-            var storage = window.localStorage;
+            var storage = $window.localStorage;
             function getAllBugs(){
                 var result = [];
                 for(var i=0; i<storage.length;i++){
@@ -180,13 +190,8 @@
             };
         });
 
-        bugTrackerApp.value("defaultTrimLength", 30);
-        bugTrackerApp.filter('trimText', function(defaultTrimLength){
-            return function(data, trimLength){
-                trimLength = trimLength || defaultTrimLength;
-                return data.length < trimLength ? data : data.substr(0,trimLength) + '...';
-            }
-        });
+        
+        
     </script>
 </head>
 <body ng-app='bugTrackerApp'>
@@ -227,6 +232,7 @@
                         ng-click="toggleBug(bug)">
                         {{bug.name | trimText}}
                     </span>
+                    <span class="datetime">{{bug.createdAt | elapsed}}</span>
                 </li>
 
             </ol>
