@@ -128,10 +128,10 @@
         </section>
         <section class="search">
             <label for="">Search :</label>
-            <input type="text" ng-model="searchBug">
+            <input type="text" ng-model="searchBug.name">
             <label for="">Is Closed ? :</label>
-            <input type="checkbox" ng-model="searchBugStatus">
-            <input type="button" value="Show All" ng-click="searchBugStatus = undefined" ng-hide="searchBugStatus == undefined">
+            <input type="checkbox" ng-model="searchBug.isClosed">
+            <input type="button" value="Show All" ng-click="searchBug.isClosed = undefined" ng-hide="searchBug.isClosed == undefined">
         </section>
         <section class="sort">
             <label for="">Order By :</label>
@@ -145,7 +145,7 @@
             <input type="button" value="Add Bug" ng-click="addNew()">
             <input type="button" value="Remove Closed" ng-click="removeClosed()">
             <ol>
-                <li ng-repeat="bug in (bugs | filter:{name :searchBug, isClosed : searchBugStatus})">
+                <li ng-repeat="bug in (bugs | filter:searchBug)">
                     <span
                         class="bugName"
                         ng-class="{closed : bug.isClosed}"
