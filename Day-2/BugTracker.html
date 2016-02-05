@@ -39,7 +39,7 @@
     2. Display the list of bugs - done
     3. Toggle the closed status of a bug - done
     4. Remove Closed bugs - done
-    5. Display statistics
+    5. Display statistics - done
     6. Search for bugs
     7. Sort the bugs
     8. Improve the display of the bug
@@ -76,8 +76,9 @@
         bugTrackerApp.controller("bugsController", function($scope, Bug){
            $scope.bugs = [
                new Bug({ name : "Data validation error", isClosed : false}),
-               new Bug({ name : "Server communication failure", isClosed : false}),
+               new Bug({ name : "Server communication failure", isClosed : true}),
                new Bug({ name : "Ui not responsive", isClosed : false}),
+               new Bug({ name : "Unable to add a new bug", isClosed : false}),
            ];
            /*$scope.addNew = function(bugName){
                console.log('new bug -> ', bugName);
@@ -126,10 +127,11 @@
             <span>{{bugs.length}}</span>
         </section>
         <section class="search">
-            <label for="">Bug :</label>
-            <input type="text" name="" id="">
+            <label for="">Search :</label>
+            <input type="text" ng-model="searchBug">
             <label for="">Is Closed ? :</label>
-            <input type="checkbox" name="" id="">
+            <input type="checkbox" ng-model="searchBugStatus">
+            <input type="button" value="Show All" ng-click="searchBugStatus = undefined" ng-hide="searchBugStatus == undefined">
         </section>
         <section class="sort">
             <label for="">Order By :</label>
@@ -143,12 +145,12 @@
             <input type="button" value="Add Bug" ng-click="addNew()">
             <input type="button" value="Remove Closed" ng-click="removeClosed()">
             <ol>
-                <li ng-repeat="bug in bugs track by $index">
+                <li ng-repeat="bug in (bugs | filter:{name :searchBug, isClosed : searchBugStatus})">
                     <span
                         class="bugName"
                         ng-class="{closed : bug.isClosed}"
                         ng-click="toggleBug(bug)">
-                        {{bug}}
+                        {{bug.name}}
                     </span>
                 </li>
 
