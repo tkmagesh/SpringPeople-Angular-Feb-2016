@@ -40,8 +40,8 @@
     3. Toggle the closed status of a bug - done
     4. Remove Closed bugs - done
     5. Display statistics - done
-    6. Search for bugs
-    7. Sort the bugs
+    6. Search for bugs - done
+    7. Sort the bugs - done
     8. Improve the display of the bug
     9. Persist the bugs in the localStorage
     10. Display 'closedAt'
@@ -135,9 +135,9 @@
         </section>
         <section class="sort">
             <label for="">Order By :</label>
-            <input type="text" name="" id="">
+            <input type="text" ng-model="orderBugBy">
             <label for="">Descending ? :</label>
-            <input type="checkbox" name="" id="">
+            <input type="checkbox" ng-model="orderByDescending">
         </section>
         <search class="list">
             <label for="">Bug :</label>
@@ -145,7 +145,7 @@
             <input type="button" value="Add Bug" ng-click="addNew()">
             <input type="button" value="Remove Closed" ng-click="removeClosed()">
             <ol>
-                <li ng-repeat="bug in (bugs | filter:searchBug)">
+                <li ng-repeat="bug in (bugs | filter:searchBug | orderBy:orderBugBy:orderByDescending)">
                     <span
                         class="bugName"
                         ng-class="{closed : bug.isClosed}"
