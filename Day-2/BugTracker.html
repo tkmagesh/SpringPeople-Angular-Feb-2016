@@ -37,8 +37,8 @@
     =========
     1. Add a new bug - done
     2. Display the list of bugs - done
-    3. Toggle the closed status of a bug
-    4. Remove Closed bugs
+    3. Toggle the closed status of a bug - done
+    4. Remove Closed bugs - done
     5. Display statistics
     6. Search for bugs
     7. Sort the bugs
@@ -51,11 +51,33 @@
     <script src="angular.js"></script>
     <script>
         var bugTrackerApp = angular.module('bugTrackerApp', []);
-        bugTrackerApp.controller("bugsController", function($scope){
+
+        /*bugTrackerApp.value('Bug', function(defaults){
+            this.name = defaults.name || '';
+            this.isClosed = defaults.isClosed ||false;
+            this.toggle = function(){
+                this.isClosed = !this.isClosed;
+            };
+        });*/
+
+        bugTrackerApp.value("defaultBugName", "[Default Bug]");
+
+        bugTrackerApp.factory("Bug", function(defaultBugName){
+            function Bug(defaults){
+                this.name = defaults.name || defaultBugName;
+                this.isClosed = defaults.isClosed ||false;
+            }
+            Bug.prototype.toggle = function(){
+                this.isClosed = !this.isClosed;
+            };
+            return Bug;
+        })
+
+        bugTrackerApp.controller("bugsController", function($scope, Bug){
            $scope.bugs = [
-               { name : "Data validation error", isClosed : false},
-               { name : "Server communication failure", isClosed : false},
-               { name : "Ui not responsive", isClosed : false},
+               new Bug({ name : "Data validation error", isClosed : false}),
+               new Bug({ name : "Server communication failure", isClosed : false}),
+               new Bug({ name : "Ui not responsive", isClosed : false}),
            ];
            /*$scope.addNew = function(bugName){
                console.log('new bug -> ', bugName);
@@ -63,14 +85,32 @@
            };*/
            $scope.newBugName= '';
            $scope.addNew = function(){
-               $scope.bugs.push($scope.newBugName);
+               var newBug = new Bug({
+                   name : $scope.newBugName,
+                   isClosed : false
+               });
+               $scope.bugs.push(newBug);
                $scope.newBugName = '';
            };
 
            $scope.toggleBug = function(bug){
-               bug.isClosed = !bug.isClosed;
+               //bug.isClosed = !bug.isClosed;
+               bug.toggle();
            };
 
+            $scope.removeClosed = function(){
+                for(var i=$scope.bugs.length-1; i>=0; i--)
+                    if ($scope.bugs[i].isClosed)
+                        $scope.bugs.splice(i,1);
+            };
+
+            $scope.getClosedCount = function(){
+                var result = 0;
+                for(var i=0; i<$scope.bugs.length; i++)
+                    if ($scope.bugs[i].isClosed)
+                        ++result;
+                return result;
+            }
         });
     </script>
 </head>
@@ -80,7 +120,7 @@
     </section>
     <section class="content" ng-controller="bugsController">
         <section class="stats">
-            <span class="closed">2</span>
+            <span class="closed">{{getClosedCount()}}</span>
             <span>/</span>
             <!--<span ng-bind="bugs.length"></span>-->
             <span>{{bugs.length}}</span>
@@ -101,10 +141,15 @@
             <label for="">Bug :</label>
             <input type="text" ng-model="newBugName">
             <input type="button" value="Add Bug" ng-click="addNew()">
-            <input type="button" value="Remove Closed">
+            <input type="button" value="Remove Closed" ng-click="removeClosed()">
             <ol>
                 <li ng-repeat="bug in bugs track by $index">
-                    <span class="bugName" ng-click="toggleBug(bug)">{{bug}}</span>
+                    <span
+                        class="bugName"
+                        ng-class="{closed : bug.isClosed}"
+                        ng-click="toggleBug(bug)">
+                        {{bug}}
+                    </span>
                 </li>
 
             </ol>
