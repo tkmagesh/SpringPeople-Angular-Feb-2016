@@ -42,8 +42,21 @@
     5. Display statistics - done
     6. Search for bugs - done
     7. Sort the bugs - done
-    8. Improve the display of the bug
+    8. Improve the display of the bug - done
     9. Persist the bugs in the localStorage
+        window.localStorage
+        ===================
+        - key/value store
+        - key and value should be strings
+        - Use angular.toJson() and angular.fromJson() for serialization and deserialization respectively
+        - APIs
+            setItem(key, value)
+            getItem(key) // => value
+            removeItem(key)
+            key(index) // => key at location 'index
+            clear()
+            length
+
     10. Display 'closedAt'
     11. Persist the bugs in the server
     12. Categorize the bugs and display by category
@@ -64,8 +77,10 @@
 
         bugTrackerApp.factory("Bug", function(defaultBugName){
             function Bug(defaults){
+                this.id = defaults.id || 0;
                 this.name = defaults.name || defaultBugName;
                 this.isClosed = defaults.isClosed ||false;
+                this.createdAt = defaults.createdAt || new Date();
             }
             Bug.prototype.toggle = function(){
                 this.isClosed = !this.isClosed;
