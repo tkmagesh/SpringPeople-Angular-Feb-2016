@@ -6,7 +6,15 @@
     <script src="angular.js"></script>
     <script>
         var myApp = angular.module("myApp", []);
-        myApp.config(function(greeterProvider){
+        myApp.factory('dummy', function(){
+            return {
+                name : 'dummy'
+            };
+        });
+
+
+        myApp.config(function(greeterProvider, dummyProvider){
+            console.log('dummyProvider -> ', dummyProvider);
             console.log('greeterProvider -> ', greeterProvider);
             greeterProvider.setGreetMsg('Have a rainy day!');
             console.log("In config");
