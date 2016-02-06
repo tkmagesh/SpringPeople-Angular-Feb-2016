@@ -1,0 +1,40 @@
+<section class="content">
+        <section class="stats">
+            <span class="closed">{{bugs | closedCount}}</span>
+            <!--<span class="closed">{{ (bugs | filter:{isClosed : true}).length }}</span>-->
+            <span>/</span>
+            <!--<span ng-bind="bugs.length"></span>-->
+            <span>{{bugs.length}}</span>
+        </section>
+        <section class="search">
+            <label for="">Search :</label>
+            <input type="text" ng-model="searchBug.name">
+            <label for="">Is Closed ? :</label>
+            <input type="checkbox" ng-model="searchBug.isClosed">
+            <input type="button" value="Show All" ng-click="searchBug.isClosed = undefined" ng-hide="searchBug.isClosed == undefined">
+        </section>
+        <section class="sort">
+            <label for="">Order By :</label>
+            <input type="text" ng-model="orderBugBy">
+            <label for="">Descending ? :</label>
+            <input type="checkbox" ng-model="orderByDescending">
+        </section>
+        <search class="list">
+            <label for="">Bug :</label>
+            <input type="text" ng-model="newBugName">
+            <input type="button" value="Add Bug" ng-click="addNew()">
+            <input type="button" value="Remove Closed" ng-click="removeClosed()">
+            <ol>
+                <li ng-repeat="bug in (bugs | filter:searchBug | orderBy:orderBugBy:orderByDescending)">
+                    <span
+                        class="bugName"
+                        ng-class="{closed : bug.isClosed}"
+                        ng-click="toggleBug(bug)">
+                        {{bug.name | trimText}}
+                    </span>
+                    <span class="datetime">{{bug.createdAt | elapsed}}</span>
+                </li>
+
+            </ol>
+        </search>
+    </section>
