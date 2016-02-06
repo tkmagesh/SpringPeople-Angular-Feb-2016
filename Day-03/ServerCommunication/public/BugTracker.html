@@ -92,19 +92,54 @@
             return Bug;
         });
 
+        bugTrackerApp.service("bugService", function($http, Bug, $q){
+            /*this.getAll = function(){
+                var deferred = $q.defer();
+
+                var promise = $http.get('http://localhost:3000/bugs');
+                promise.then(function(response){
+                    var bugs = response.data.map(function(bugData){
+                        return new Bug(bugData);
+                    });
+                    deferred.resolve(bugs);
+                });
+
+                return deferred.promise;
+            }*/
+
+           /* this.getAll = function(){
 
 
-        bugTrackerApp.controller("bugsController", function($scope, Bug, $http){
+                var httpPromise = $http.get('http://localhost:3000/bugs');
+                var myPromise = httpPromise.then(function(response){
+                    var bugs = response.data.map(function(bugData){
+                        return new Bug(bugData);
+                    });
+                    return bugs;
+                });
+
+                return myPromise;
+            }*/
+             this.getAll = function(){
+                return $http
+                        .get('http://localhost:3000/bugs')
+                        .then(function(response){
+                            var bugs = response.data.map(function(bugData){
+                                return new Bug(bugData);
+                            });
+                            return bugs;
+                        });
+                }
+        })
+
+
+        bugTrackerApp.controller("bugsController", function($scope, Bug, $http, bugService){
 
 
            $scope.bugs = [];
-
-           var promise = $http.get('http://localhost:3000/bugs');
-            promise.then(function(response){
-                $scope.bugs = response.data.map(function(bugData){
-                    return new Bug(bugData);
-                });
-            });
+           var promise = bugService.getAll().then(function(bugs){
+               $scope.bugs = bugs;
+           });
 
            $scope.newBugName= '';
            $scope.addNew = function(){
@@ -134,6 +169,7 @@
         });
         bugTrackerApp.filter('closedCount', function(){
             return function(bugs){
+                bugs = bugs || [];
                 return bugs.reduce(function(result, bug){
                     return bug.isClosed ? ++result : result;
                 },0);
