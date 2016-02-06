@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="angular.js"></script>
+    <script>
+        var myApp = angular.module("myApp", []);
+        myApp.config(function(greeterProvider){
+            console.log('greeterProvider -> ', greeterProvider);
+            greeterProvider.setGreetMsg('Have a rainy day!');
+            console.log("In config");
+        });
+        myApp.run(function(){
+            console.log("In run");
+        })
+        myApp.provider('greeter', function(){
+            console.log('outer factory initialized');
+            var _greetMsg = 'Have a nice day!'
+
+            return {
+                setGreetMsg : function(msg){
+                    _greetMsg = msg;
+                },
+                $get : function(){
+                    console.log("inner factory intialized");
+                    return {
+                        name : '',
+                        message : '',
+                        greet : function(){
+                            this.message =  'Hi ' + this.name + ', ' + _greetMsg;
+                        }
+                    };
+                }
+            }
+        });
+        myApp.controller("myController", function($scope, greeter){
+           $scope.greeter = greeter;
+        });
+
+    </script>
+</head>
+<body ng-app="myApp" ng-controller="myController">
+    <label for="">Name :</label>
+    <input type="text" ng-model="greeter.name">
+    <input type="button" value="Greet" ng-click="greeter.greet()">
+    <div>{{greeter.message}}</div>
+</body>
+</html>
