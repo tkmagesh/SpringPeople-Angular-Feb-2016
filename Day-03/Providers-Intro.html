@@ -19,9 +19,11 @@
             greeterProvider.setGreetMsg('Have a rainy day!');
             console.log("In config");
         });
+
         myApp.run(function(){
             console.log("In run");
-        })
+        });
+
         myApp.provider('greeter', function(){
             console.log('outer factory initialized');
             var _greetMsg = 'Have a nice day!'

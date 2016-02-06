@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script>
+    /*Sync*/
+    function addSync(x,y){
+        console.log('[Provider] - processing ', x , ' and ', y);
+        var result = x + y;
+        console.log('[Provider] - returning result');
+        return result;
+    }
+    function addSyncClient(x,y){
+        console.log('[Consumer] - trigger add');
+        var result = addSync(x,y);
+        console.log('[Consumer] - result = ', result);
+    }
+    /*Async*/
+    function addAsync(x,y, onResult){
+        console.log('[Provider] - processing ', x , ' and ', y);
+        setTimeout(function(){
+            var result = x + y;
+            console.log('[Provider] - returning result');
+            if (typeof onResult === 'function')
+                onResult(result);
+        }, 3000);
+    }
+    function addAsyncClient(x,y){
+        console.log('[Consumer] - trigger add');
+        addAsync(x,y, function(result){
+            console.log('[Consumer] - result = ', result);
+        });
+    }
+    </script>
+</head>
+<body>
+
+</body>
+</html>
